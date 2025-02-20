@@ -5,6 +5,7 @@ public class inter {
     public inter(){
 
     }
+<<<<<<< HEAD
 
     public int getA() {
         return a;
@@ -21,4 +22,6 @@ public class inter {
     public void setG(int g) {
         this.g = g;
     }
+=======
+>>>>>>> 0e073c896c1ff56caba6d21792aeb477587eb355
 }
