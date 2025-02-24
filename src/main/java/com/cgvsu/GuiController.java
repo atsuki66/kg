@@ -5,6 +5,7 @@ import com.cgvsu.math.TranslationModel;
 import com.cgvsu.model.DeleteVertices;
 import com.cgvsu.ObjWriter.ObjWriter;
 import com.cgvsu.render_engine.RenderEngine;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -23,6 +24,7 @@ import javafx.stage.Stage;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
 
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.io.IOException;
@@ -116,6 +118,22 @@ public class GuiController {
         timeline = new Timeline();
         timeline.setCycleCount(Animation.INDEFINITE);
 
+        ToggleSwitch buttonStyle = new ToggleSwitch();
+        buttonStyle.setLayoutY(20);
+        buttonStyle.setLayoutX(350);
+        SimpleBooleanProperty isOn = buttonStyle.switchOnProperty();
+        //АБСОЛЮТНЫЙ ПУТЬ ДО ПРОЕКТА
+        File directory = new File(".");
+        String path = "file:/" + directory.getCanonicalPath().replace("\\", "/") + "/Simple3DViewer/target/classes/style.css";
+        isOn.addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                buttonStyle.getScene().getRoot().getStylesheets().add(path);
+            } else {
+                buttonStyle.getScene().getRoot().getStylesheets().remove(path);
+            }
+        });
+        gadgetPane.getChildren().add(buttonStyle);
+
         createCamera();
 
         baseModelColor.setValue(Color.GRAY);
@@ -126,7 +144,7 @@ public class GuiController {
 
             canvas.getGraphicsContext2D().clearRect(0, 0, width, height);
             for (Camera c : cameras) {
-                c.setAspectRatio((float) (width / height));
+                c.setAspectRatio((float) (width / height)); // задаем AspectRatio
             }
 
             if (meshes.size() != 0) {
@@ -145,13 +163,14 @@ public class GuiController {
         alert.showAndWait();
     }
 
+    //проверяем какая камера сейчас активна
     private Camera activeCamera() {
         for (Camera camera : cameras) {
             if (camera.isActive()) {
                 return camera;
             }
         }
-        showMessage("Осторожно", "Переключено на  Камеру 1", messageInformation);
+        showMessage("Информация", "Нет активной камеры. Переключаю на: Камера 1", messageInformation);
         return cameras.get(0);
     }
 
@@ -173,24 +192,6 @@ public class GuiController {
             activeCamera().movePosition(new Vector3f(0, TRANSLATION, 0));
         }
         if (Objects.equals(keyEvent.getText(), "f")) {
-            activeCamera().movePosition(new Vector3f(0, -TRANSLATION, 0));
-        }
-        if (Objects.equals(keyEvent.getText(), "ц")) {
-            activeCamera().movePosition(new Vector3f(0, 0, -TRANSLATION));
-        }
-        if (Objects.equals(keyEvent.getText(), "ы")) {
-            activeCamera().movePosition(new Vector3f(0, 0, TRANSLATION));
-        }
-        if (Objects.equals(keyEvent.getText(), "ф")) {
-            activeCamera().movePosition(new Vector3f(TRANSLATION, 0, 0));
-        }
-        if (Objects.equals(keyEvent.getText(), "в")) {
-            activeCamera().movePosition(new Vector3f(-TRANSLATION, 0, 0));
-        }
-        if (Objects.equals(keyEvent.getText(), "к")) {
-            activeCamera().movePosition(new Vector3f(0, TRANSLATION, 0));
-        }
-        if (Objects.equals(keyEvent.getText(), "а")) {
             activeCamera().movePosition(new Vector3f(0, -TRANSLATION, 0));
         }
     }
@@ -231,8 +232,13 @@ public class GuiController {
                 return;
             }
             String fileName = String.valueOf(Path.of(file.getAbsolutePath()));
-            if (transformSave.isSelected()) {
-
+            if (transformSave.isSelected()) { //сохранить модель с изменениями?
+                //model.transform();
+                // когда будут приходить значения для трансформации,
+                // изменяй не сами вершины в модели, а создай доп поле transformationVertices которое
+                // будет хранить изменённые вершины. Также создай метод transform(), при вызове которого
+                // будешь менять местами згначения полей vertices и transformationVertices, чтобы
+                // я смогла сохранить модель с изменёнными параметрами
             }
             ObjWriter.write(activeModel(), (fileName.substring(fileName.length() - 4).equals(".obj")) ? fileName : fileName + ".obj");
             showMessage("Информация", "Модель успешно сохранёна!", messageInformation);
