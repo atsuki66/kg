@@ -7,6 +7,4 @@
 
     opens com.cgvsu to javafx.fxml;
     exports com.cgvsu;
-     exports com.cgvsu.GUI;
-     opens com.cgvsu.GUI to javafx.fxml;
- }
+}
