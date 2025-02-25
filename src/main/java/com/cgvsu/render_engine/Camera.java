@@ -13,6 +13,8 @@ public class Camera {
     private float nearPlane;
     private float farPlane;
     private boolean isActive;
+    private float yaw = 0.0f;
+    private float pitch = 0.0f;
 
     // Конструктор
     public Camera(
@@ -80,4 +82,5 @@ public class Camera {
     Matrix4f getProjectionMatrix() {
         return GraphicConveyor.perspective(fov, aspectRatio, nearPlane, farPlane);
     }
+
 }
